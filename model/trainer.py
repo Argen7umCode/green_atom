@@ -1,6 +1,8 @@
 from sklearn.metrics import accuracy_score
 from torch import sigmoid
+from tqdm import tqdm
 import torch
+import numpy as np
 
 
 class Trainer:
@@ -62,19 +64,32 @@ class Trainer:
             
         return epoch_loss, epoch_acc
     
-    def loop(model, optimizer, criterion, train_dataloader, test_dataloader, n_epochs):
+    def _early_stop(self, loss):
+        if loss < self.min_loss:
+            if self.iter_to_stop == self.num_to_stop:
+                return False
+            self.iter_to_stop += 1 
+
+    def train_validate(self):
         train_epoch_losses = []
         test_epoch_losses = []
         train_epoch_acces = []
         test_epoch_acces = []
         
-        for epoch in range(n_epochs):
-            for loader, is_train in zip([train_dataloader, test_dataloader], [True, False]):
+        for epoch in range(self.n_epochs):
+            for loader, is_train in zip([self.train_dataloader, self.test_dataloader], [True, False]):
                 batch_iterator = tqdm(loader, unit="batch", leave=True)
                 
-                epoch_loss, epoch_acc = train_epoch(model, optimizer, criterion, batch_iterator)
+                epoch_loss, epoch_acc = self.train_epoch(batch_iterator)
 
-                train_str = f"Epoch {epoch+1}/{n_epochs} " + f"{'Train' if is_train else 'Test'} Loss: {np.mean(epoch_loss)/(batch_iterator.n+1):.4f} " +f"{'Train' if is_train else 'Test'} Accuracy: {np.mean(epoch_acc)/(batch_iterator.n+1):.4f}" 
+                train_str = f"Epoch {epoch+1}/{self.n_epochs} " + f"{'Train' if is_train else 'Test'} Loss: {np.mean(epoch_loss)/(batch_iterator.n+1):.4f} " +f"{'Train' if is_train else 'Test'} Accuracy: {np.mean(epoch_acc)/(batch_iterator.n+1):.4f}" 
+                
+                batch_iterator.set_postfix_str({
+                    'epoch' : f'{epoch+1}/{self.n_epochs}',
+                    'stage' : 'train' if is_train else 'test',
+                    'loss'  : f'{np.mean(epoch_loss):.4f}',
+                    'acc'   : f'{np.mean(epoch_acc):.4f}'
+                })
 
                 if is_train:
                     train_epoch_losses.append(epoch_loss)
@@ -82,18 +97,12 @@ class Trainer:
                 else: 
                     test_epoch_losses.append(epoch_loss)
                     test_epoch_acces.append(epoch_acc)
+            
+            if self.early_stop(test_epoch_losses[1][-1]):
+                continue
 
-    #                 batch_iterator.set_description(train_str)
-                batch_iterator.set_postfix_str({
-                    'epoch' : f'{epoch+1}/{n_epochs}',
-                    'stage' : 'train' if is_train else 'test',
-                    'loss'  : f'{np.mean(epoch_loss):.4f}',
-                    'acc'   : f'{np.mean(epoch_acc):.4f}'
-                })
-                batch_iterator.update()
-    #                 break
-    #         break
-        history = [
+        self.history = [
             train_epoch_losses, test_epoch_losses, train_epoch_acces, test_epoch_acces
         ]
-        return history   
+
+        return self.history
