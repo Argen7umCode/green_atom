@@ -4,6 +4,7 @@ from torch.nn import BCEWithLogitsLoss
 from dataprocess import DataImporter, DataPreProcesser, TextDataset, split_data
 from torch.optim import Adam
 import torch
+import pandas as pd
 from pprint import pprint
 import os
 
@@ -11,6 +12,7 @@ import os
 LEARNING_RATE = 1e-3
 N_EPOCH = 20
 BATCH_SIZE = 128
+MAX_TEXT_LENTH = 10_000
 
 model_params = {
     "embedding_matrix" : 'ff', 
@@ -18,7 +20,7 @@ model_params = {
     "output_labels"    : 1
 }
 path = os.getcwdb()
-print(os.listdir(f'{str(path)}/data'))
+
 
 
 # device =  torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -27,12 +29,24 @@ print(os.listdir(f'{str(path)}/data'))
 # optimizer = Adam(model.parameters(), lr=LEARNING_RATE)
 # trainer = Trainer(model, criterion, device, optimizer, BATCH_SIZE, N_EPOCH, LEARNING_RATE)
 
+pathes = [
+    f'data/{i}' for i in ['/train/pos/', '/train/neg/', '/test/pos/', '/test/neg/']
+]
 
+try:
+    data = pd.read_csv('data/processed_data.csv')
+    assert 'preprocessed text' not in data.columns
+except Exception as e:
+    if e is FileNotFoundError:
+        pass
+    if e is AssertionError:
+        pass
 
-# pathes = [
-#     f'{path}{i}' for i in ['/train/pos/', '/train/neg/', '/test/pos/', '/test/neg/']
-# ]
+    importer = DataImporter(pathes)
+    preprocesser = DataPreProcesser(MAX_TEXT_LENTH)
+    raw_data = importer.get_text_and_score()
 
-# # raw_data = DataImporter(pathes).get_text_and_score()
-
-# # if op.get
+    dataset = pd.DataFrame(raw_data, columns=('data', 'target'))
+    dataset['cleaned text'] = dataset['data'].parallel_apply(clean_regex)
+    dataset['preprocessed text'] = dataset['cleaned text'].parallel_apply(preprocess_text)
+    dataset['preprocessed text']

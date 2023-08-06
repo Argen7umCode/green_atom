@@ -5,6 +5,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from tensorflow.keras.utils import pad_sequences
 from collections import Counter
 from pandarallel import pandarallel
+from re import
 
 
 class DataPreProcesser:
@@ -48,3 +49,5 @@ class DataPreProcesser:
         preprocessed_text = self.join_word_list(self.limit_sequence(word_list_with_bos, self.max_lenth))
         
         return preprocessed_text
+
+    def preprocess_dataset(self, raw_dataset):
