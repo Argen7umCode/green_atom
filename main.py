@@ -1,2 +1,4 @@
+from dataprocess.data_preprocesser import DataProcesser 
 
-print('ASS')
+
+dper = DataProcesser(10_000)
