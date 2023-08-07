@@ -5,7 +5,7 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from tensorflow.keras.utils import pad_sequences
 from collections import Counter
 from pandarallel import pandarallel
-from re import
+from re import sub
 
 
 class DataPreProcesser:
@@ -29,8 +29,10 @@ class DataPreProcesser:
         return list(map(self.lemmatizer.lemmatize, word_list))
 
     def remove_stop_words(self, word_list):
-        return [word for word in word_list if word not in stopwords]
-
+        text = self.join_word_list(word_list)
+        text = sub(self.rex_to_rem_stopwords, ' ', text)
+        return self.split_tords_by_space(text)
+    
     def add_bos_tag(self, word_list):
         word_list.insert(0, '<bos>')
         return word_list
@@ -51,3 +53,4 @@ class DataPreProcesser:
         return preprocessed_text
 
     def preprocess_dataset(self, raw_dataset):
+    
