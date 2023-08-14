@@ -162,5 +162,5 @@ data/*
 *.csv
 *.json
 /data
-test*.pt
-model/n_grams_test50 2 32.pt
+*test*.pt
+
