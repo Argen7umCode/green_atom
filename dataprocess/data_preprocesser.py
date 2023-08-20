@@ -15,7 +15,18 @@ class DataPreProcesser:
         self.max_lenth = max_lenth
         self.stopwords = stopwords.words('english')
         self.lemmatizer = WordNetLemmatizer()
+        self.rex_to_rem_stopwords = '|'.join(f'\s{word}\s' for word in self.stopwords)
     
+    def clean_regex(self, text):
+        text = sub('\"{2,3}', '', text)
+        text = sub(r'[\"\#\$\%\&\'\(\)\*\+\/\:\;\<\=\>\@\[\\\]\^\_\`\{\|\}\~]', ' ', text)
+        text = sub(r'[.,!?-]', '', text)
+        text = sub(r'<[^>]+>', '', text)
+        text = sub(r'\d+', '', text)
+        text = sub(r' +', ' ', text)
+        text = sub(r'[^\x00-\x7f]', r'', text)
+        return text
+
     def tokenize_text(self, text):
         return word_tokenize(text)
 
@@ -40,17 +51,20 @@ class DataPreProcesser:
     def limit_sequence(self, word_list, max_lenth):
         return word_list[:max_lenth]
 
-    def join_word_list(word_list):
+    def join_word_list(self, word_list):
         return ' '.join(word_list)
 
+    def pad_seq(self, sequence):
+        print(sequence)
+        return list(pad_sequences([sequence], self.max_lenth, padding='pre', value=0))
+
     def preprocess_text(self, text):
-        word_list = self.tokenize_text(text)
+        word_list = self.tokenize_text(self.clean_regex(text))
         lower_word_list = self.make_lower(word_list)
         lemmatized_word_list = self.make_lower(lower_word_list)
         word_list_with_bos = self.add_bos_tag(self.remove_stop_words(lemmatized_word_list))
-        preprocessed_text = self.join_word_list(self.limit_sequence(word_list_with_bos, self.max_lenth))
-        
-        return preprocessed_text
+        preprocessed_seq = self.limit_sequence(word_list_with_bos, self.max_lenth)
 
-    def preprocess_dataset(self, raw_dataset):
-        pass
+        return preprocessed_seq
+
+
