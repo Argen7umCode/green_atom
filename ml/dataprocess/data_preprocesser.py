@@ -5,8 +5,13 @@ from nltk.stem.wordnet import WordNetLemmatizer
 from tensorflow.keras.utils import pad_sequences
 from collections import Counter
 from pandarallel import pandarallel
+from pprint import pprint
 from re import sub
-from app import data_importer
+
+from  app import data_importer
+print('\n'.join(globals()))
+
+
 
 
 class DataPreProcesser:

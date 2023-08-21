@@ -5,7 +5,7 @@ from json import load, dump
 
 class DataImporter:
     
-    def __init__(self, pathes) -> None:
+    def __init__(self, pathes=None) -> None:
         self.pathes = pathes
         self.wav2vec_matrix_path = f'{basedir}/data/word2vec_martix.npy'
         self.stopwords_path = f'{basedir}/data/stopwords.json'
