@@ -8,8 +8,6 @@ from pandarallel import pandarallel
 from pprint import pprint
 from re import sub
 
-from  app import data_importer
-print('\n'.join(globals()))
 
 
 
@@ -19,11 +17,22 @@ class DataPreProcesser:
     def __init__(self, max_lenth) -> None:
         nltk.download('stopwords')
         self.max_lenth = max_lenth
-        self.stopwords = data_importer.get_stopwords()
-        self.word2vec_matrix = data_importer.get_wav2vec_matrix()
+        self.stopwords = None
         self.lemmatizer = WordNetLemmatizer()
-        self.rex_to_rem_stopwords = '|'.join(f'\s{word}\s' for word in self.stopwords)
+        
     
+    def set_stopwords(self, stopwords):
+        self.stopwords = stopwords
+
+    def set_word2vec_matrix(self, word2vec_matrix):
+        self.word2vec_matrix = word2vec_matrix
+
+    def set_rex_to_rem_stopwords(self):
+        if not self.stopwords:
+            nltk.download('stopwords')
+            self.stopwords = list(stopwords.words('english'))
+        
+        self.rex_to_rem_stopwords = '|'.join(f'\s{word}\s' for word in self.stopwords)
 
     def clean_regex(self, text):
         text = sub('\"{2,3}', '', text)

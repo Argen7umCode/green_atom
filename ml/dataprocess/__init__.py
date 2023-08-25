@@ -1,5 +1,4 @@
-from .data_preprocesser import DataPreProcesser
-from .data_importer import DataImporter
+from .data_manager import DataManager
 from .dataset import TextDataset
 from .split_data import split_data
 from .vectorizer import Vectorizer
