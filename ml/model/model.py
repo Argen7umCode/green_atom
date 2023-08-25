@@ -22,6 +22,7 @@ class Pytorch_model():
         else:
             self.net = torch.load(
                 model_path, map_location=lambda storage, loc: storage.cuda(gpu_id))
+        print(type(self.net))
         self.net.eval()
 
     def predict(self, text):

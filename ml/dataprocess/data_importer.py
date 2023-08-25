@@ -7,8 +7,10 @@ class DataImporter:
     
     def __init__(self, pathes=None) -> None:
         self.pathes = pathes
-        self.wav2vec_matrix_path = f'{basedir}/data/word2vec_martix.npy'
-        self.stopwords_path = f'{basedir}/data/stopwords.json'
+        pattern = f'{basedir}'
+        self.word2vec_matrix_path = pattern + 'data/word2vec_martix.npy'
+        self.stopwords_path = pattern + '/data/stopwords.json'
+        self.word2int_path = pattern + '/data/word2ind.json'
 
     def get_text_and_score(self):
         text_score = []
@@ -21,17 +23,39 @@ class DataImporter:
                 text_score.append([text, score])
         return text_score
     
-    def get_wav2vec_matrix(self):
-        if os.path.isfile(self.wav2vec_matrix_path):
-            with open(self.wav2vec_matrix_path, 'rb') as file:
-                wav2vec_matrix = load(file)
-        else:
-            pass
+    def __load_json_file(self, path, func_if_exception):
+        try:
+            with open(path, 'r') as file:
+                data = load(file)
+        except FileNotFoundError:
+            data = func_if_exception()
+            # Тут нужна обработка 
+
+        return data
+    
+    def make_word2ver_matrix(self):
+        pass
+
+    def get_word2vec_matrix(self):
+        path = self.word2vec_matrix_path
+        wav2vec_matrix = self.__load_json_file(path, None)
 
         return wav2vec_matrix
     
+    def make_stopwords_matrix(self):
+        pass
+
     def get_stopwords(self):
-        with open(self.stopwords_path, 'r') as file:
-            stopwords = load(file)
+        path = self.stopwords_path
+        stopwords = self.__load_json_file(path, None)
 
         return stopwords
+ 
+    def make_word2int_dict(self):
+        pass
+    
+    def get_word2int_dict(self):
+        path = self.word2int_path
+        word2int_dict = self.__load_json_file(path, None)
+
+        return word2int_dict

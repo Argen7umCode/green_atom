@@ -9,4 +9,4 @@ class FlaskConfig(object):
 class MLConfig:
     MAX_SEQ_LENGHT = 1000
     EMBEDDING_DIM = 300
-    MODEL_PATH = f'{basedir}/model/test.pt'
+    MODEL_PATH = f'{basedir}/ml/model/test.pt'
