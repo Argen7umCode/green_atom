@@ -20,7 +20,6 @@ class DataPreProcesser:
         self.stopwords = None
         self.lemmatizer = WordNetLemmatizer()
         
-    
     def set_stopwords(self, stopwords):
         self.stopwords = stopwords
 

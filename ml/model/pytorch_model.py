@@ -1,9 +1,10 @@
 import torch.nn as nn
+from .binary_text_classifier import BinaryTextClassifier
 import torch
 
 
 class Pytorch_model():
-    def __init__(self, model_path, gpu_id=None):
+    def __init__(self, model_path, gpu_id=None, **kwargs):
         self.gpu_id = gpu_id
 
         if self.gpu_id is not None and isinstance(self.gpu_id, int) and torch.cuda.is_available():
@@ -22,9 +23,14 @@ class Pytorch_model():
         else:
             self.net = torch.load(
                 model_path, map_location=lambda storage, loc: storage.cuda(gpu_id))
-        print(type(self.net))
-        self.net.eval()
+            
+        self.model = BinaryTextClassifier(embedding_matrix=self.net['embedding.weight'], 
+                                     hidden_dim=kwargs.get('hidden_dim'),
+                                     num_layers=kwargs.get('num_layers')).to(self.device)
+        self.model.load_state_dict(self.net)
+        self.model.eval()
 
     def predict(self, text):
         outputs = self.net(text.squeeze())
         return outputs
+        

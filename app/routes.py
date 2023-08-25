@@ -1,4 +1,4 @@
-from app import app, data_preprocesser, vectorizer, model
+from app import app, data_manager, vectorizer, model
 from flask import request, jsonify
 
 
@@ -10,11 +10,11 @@ def predict():
     text = req.get('text')
     
     # process text
-    preprocessed_text = data_preprocesser.preprocess_text(text)
+    preprocessed_text = data_manager.data_preprocesser.preprocess_text(text)
 
     # vectorization 
     encoded_seq = vectorizer.encode_sequence(preprocessed_text)
-    padded_seq = data_preprocesser.pad_seq(encoded_seq)
+    padded_seq = data_manager.data_preprocesser.pad_seq(encoded_seq)
 
     # prediction
     # model.predict(padded_seq)
