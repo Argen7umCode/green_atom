@@ -10,7 +10,7 @@ class DataImporter:
         pattern = f'{basedir}'
         self.word2vec_matrix_path = pattern + 'data/word2vec_martix.npy'
         self.stopwords_path = pattern + '/data/stopwords.json'
-        self.word2int_path = pattern + '/data/word2ind.json'
+        self.word2int_path = pattern + '/data/word2int.json'
 
     def get_text_and_score(self):
         text_score = []

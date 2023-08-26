@@ -71,7 +71,6 @@ class DataPreProcesser:
         return ' '.join(word_list)
 
     def pad_seq(self, sequence):
-        print(sequence)
         return list(pad_sequences([sequence], self.max_lenth, padding='pre', value=0))
 
     def preprocess_text(self, text):

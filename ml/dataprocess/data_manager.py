@@ -12,7 +12,7 @@ class DataManager:
     def __init__(self, **kwargs) -> None:
         self.__setup_data_importer(**kwargs)
         self.__setup_data_preprocesser(**kwargs)
-
+        self.__setup_vectoriser()
 
     def __setup_data_importer(self, **kwargs) -> None:
         self.data_importer = DataImporter(kwargs.get('pathes'))
@@ -25,4 +25,6 @@ class DataManager:
     
     def __setup_vectoriser(self, **kwargs) -> None:
         self.vectorizer = Vectorizer()
+        word2int_dict = self.data_importer.get_word2int_dict()
+        self.vectorizer.set_word2int_dict(word2int_dict)
         

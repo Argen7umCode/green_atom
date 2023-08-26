@@ -1,9 +1,33 @@
 import requests
+from json import load
+
+with open('test/imdb_revs.json') as file:
+    reviews = load(file)
 
 
-review = '''Margot does the best with what she's given, but this film was very disappointing to me. It was marketed as a fun, quirky satire with homages to other movies. It started that way, but ended with over-dramatized speeches and an ending that clearly tried to make the audience feel something, but left everyone just feeling confused. And before you say I'm a crotchety old man, I'm a woman in my 20s, so I'm pretty sure I'm this movie's target audience. The saddest part is there were parents with their kids in the theater that were victims of the poor marketing, because this is not a kid's movie. Overall, the humor was fun on occasion and the film is beautiful to look at, but the whole concept falls apart in the second half of the film and becomes a pity party for the "strong" woman.'''
-resp = requests.post('http://localhost:5000/predict', json={
-    'text' : review
-})
+def out_red(text):
+    print("\033[31m {}" .format(text))
 
-print(resp.json())
+def out_green(text):
+    print("\033[32m {}" .format(text))
+
+def out_blue(text):
+    print("\033[34m {}" .format(text))
+
+def get_test_pred_review(review):
+    resp = requests.post('http://localhost:5000/predict', json={
+        'text' : review
+    }).json()
+    return resp
+
+correct = 0
+for review in reviews:
+    pred = get_test_pred_review(review.get('text')).get('predictions')
+    score = review.get('score')
+    if pred == score:
+        out_green(f'pred: {pred}, score: {score}')
+        correct += 1
+    else:
+        out_red(f'pred: {pred}, score: {score}')
+
+out_blue(f'Total acc: {correct/len(reviews)}')

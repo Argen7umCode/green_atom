@@ -2,7 +2,6 @@ import torch.nn as nn
 from .binary_text_classifier import BinaryTextClassifier
 import torch
 
-
 class Pytorch_model():
     def __init__(self, model_path, gpu_id=None, **kwargs):
         self.gpu_id = gpu_id
@@ -31,6 +30,8 @@ class Pytorch_model():
         self.model.eval()
 
     def predict(self, text):
-        outputs = self.net(text.squeeze())
-        return outputs
+        with torch.no_grad():
+            outputs = nn.functional.sigmoid(self.model(torch.tensor(text)))
+        
+        return 1 if outputs[0] > 0.5 else 0
         
