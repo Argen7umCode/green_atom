@@ -45,12 +45,7 @@ def get_reviews_links(links):
 def get_reviews(link):
     page = s.get(link).text
     reviews = BeautifulSoup(page, 'html.parser').findAll('div', class_='review-container')[:10]
-    # reviews = [
-    #     {
-    #         'text'  : review.find('div', class_='text').text,
-    #         'score' : 1 if int(review.find('span', class_='rating-other-user-rating').find('span').text) > 5 else 0
-    #     } for review in tqdm(reviews)
-    # ]
+
     revs = []
     for review in tqdm(reviews):
         try: 
@@ -59,9 +54,7 @@ def get_reviews(link):
             continue
         text = review.find('div', class_='text').text
         # data = {
-        #     'text'  : review.find('div', class_='text').text,
-        #     'score' : 1 if int(review.find('div', class_='ipl-ratings-bar').find('span').find('span').text) > 5 else 0
-        # } 
+
         revs.append({
             'text' : text, 
             'score': score

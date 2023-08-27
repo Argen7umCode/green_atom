@@ -1,0 +1,10 @@
+*.csv 
+data/aclImdb
+ml/notebooks
+ml/model/model_files/*test*.pt
+*.dvc
+.dvc
+.dvcignore
+.vscode
+.venv
+__pycache__

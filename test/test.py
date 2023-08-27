@@ -1,6 +1,7 @@
 import requests
 from json import load
 
+
 with open('test/imdb_revs.json') as file:
     reviews = load(file)
 
