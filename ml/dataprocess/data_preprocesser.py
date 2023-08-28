@@ -16,6 +16,7 @@ class DataPreProcesser:
 
     def __init__(self, max_lenth) -> None:
         nltk.download('stopwords')
+        nltk.download('punkt')
         self.max_lenth = max_lenth
         self.stopwords = None
         self.lemmatizer = WordNetLemmatizer()

@@ -16,7 +16,7 @@ def out_blue(text):
     print("\033[34m {}" .format(text))
 
 def get_test_pred_review(review):
-    resp = requests.post('http://localhost:5000/predict', json={
+    resp = requests.post('http://127.0.0.1:5000/predict', json={
         'text' : review
     }).json()
     return resp

@@ -2,6 +2,10 @@ from app import app, data_manager, model
 from flask import request, jsonify
 
 
+@app.route('/')
+def hello_geek():
+    return '<h1>Hello from Flask & Docker</h2>'
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -22,4 +26,11 @@ def predict():
     return jsonify({
         'predictions' : predictions,
         'result' : 1
+    })
+
+
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({
+        'code' : 'uspex'
     })

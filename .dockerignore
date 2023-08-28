@@ -6,5 +6,4 @@ ml/model/model_files/*test*.pt
 .dvc
 .dvcignore
 .vscode
-.venv
 __pycache__
